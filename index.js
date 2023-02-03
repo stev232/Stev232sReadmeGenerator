@@ -29,6 +29,8 @@ ${ data.description }
 - [Installation](#installation)
 - [Usage](#usage)
 - [License](#license)
+- [Tests](#tests)
+- [Questions](#questions)
 
 ## Installation
 
@@ -57,7 +59,7 @@ ${ data.test }
 ## Questions
 
 Github profile: https://github.com/${ data.username }<br>
-If you have any additional questions you can email me at ${ data.email }`;
+If you have any additional questions you can email me at [${ data.email }](mailto:${ data.email })`;
 
     fs.writeFile(fileName, readmeData, (err) => {
         if(err) {
@@ -89,7 +91,7 @@ function licenseLink(license) {
         case 'WTFPL':
             return links.WTFPL;
         default:
-            break;
+            return '';
     }
 }
 
