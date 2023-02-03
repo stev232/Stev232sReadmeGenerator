@@ -1,34 +1,19 @@
-// TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-/*
-GIVEN a command-line application that accepts user input
-WHEN I am prompted for information about my application repository
-THEN a high-quality, professional README.md is generated with the title of my project and sections entitled Description, Table of Contents, Installation, Usage, License, Contributing, Tests, and Questions
-DONE | WHEN I enter my project title
-THEN this is displayed as the title of the README
-DONE | WHEN I enter a description, installation instructions, usage information, contribution guidelines, and test instructions
-THEN this information is added to the sections of the README entitled Description, Installation, Usage, Contributing, and Tests
-WHEN I choose a license for my application from a list of options
-THEN a badge for that license is added near the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
-DONE | WHEN I enter my GitHub username
-THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
-DONE | WHEN I enter my email address
-THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
-WHEN I click on the links in the Table of Contents
-THEN I am taken to the corresponding section of the README
-
-# <Your-Project-Title>
-
-
-
-Go the extra mile and write tests for your application. Then provide examples on how to run them here.
-*/
-
 // Array of questions for user input
-const questions = ['Project title: ', 'Describe your project: ', 'How to install program: ', 'How to use the project: ', 'Contribution guidelines: ', 
-    'Test instructions: ', 'Enter your GitHub username: ', 'Enter your email address: '];
+const questions = ['Project title: ', 'Describe your project: ', 'How to install program: ', 'How to use the project: ', 
+    'Contribution guidelines: ', 'Test instructions: ', 'Which license does your project use(Apache, Creative Commons, IBM, MIT, Mozilla, Unlicense, WTFPL): ', 
+    'Enter your GitHub username: ', 'Enter your email address: '];
+const links = {
+    Apache: ` [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)`,
+    CreativeCommons: `[![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)`,
+    IBM: `[![License: IPL 1.0](https://img.shields.io/badge/License-IPL_1.0-blue.svg)](https://opensource.org/licenses/IPL-1.0)`,
+    MIT: `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`,
+    Mozilla: `[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)`,
+    Unlicense: `[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)`,
+    WTFPL: `[![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)`,
+}
 
 // Write README file
 function writeToFile(fileName, data) {
@@ -55,7 +40,11 @@ ${ data.usage }
 
 ## License
 
+${ data.license }
+
 ## Badges
+
+${ licenseLink(data.license) }
 
 ## How to Contribute
 
@@ -63,7 +52,12 @@ ${ data.contribution }
 
 ## Tests
     
-${ data.test }`;
+${ data.test }
+
+## Questions
+
+Github profile: https://github.com/${ data.username }<br>
+If you have any additional questions you can email me at ${ data.email }`;
 
     fs.writeFile(fileName, readmeData, (err) => {
         if(err) {
@@ -72,13 +66,31 @@ ${ data.test }`;
             console.log('Success');
         }
     })
-    console.log(
-        `${data.title}\n${data.description}\n${data.install}\n${data.usage}\n${data.contribution}\n${data.test}\n${data.username}\n${data.email}`
-    )
 }
 
-function writeFail() {
-    console.log(`Try again!`);
+function licenseLink(license) {
+    if(license.toUpperCase() === "CREATIVE COMMONS") {
+        license = 'cc'
+    }
+    
+    switch(license.toUpperCase()) {
+        case 'APACHE':
+            return links.Apache;
+        case 'CC':
+            return links.CreativeCommons;
+        case 'IBM':
+            return links.IBM;
+        case 'MIT':
+            return links.MIT;
+        case 'MOZILLA':
+            return links.Mozilla;
+        case 'UNLICENSE':
+            return links.Unlicense;
+        case 'WTFPL':
+            return links.WTFPL;
+        default:
+            break;
+    }
 }
 
 // Initialize app
@@ -117,11 +129,16 @@ function init() {
         {
             type: 'input',
             message: questions[6],
-            name: 'username',
+            name: 'license',
         },
         {
             type: 'input',
             message: questions[7],
+            name: 'username',
+        },
+        {
+            type: 'input',
+            message: questions[8],
             name: 'email',
         },
     ])
